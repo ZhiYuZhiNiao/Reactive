@@ -3,9 +3,9 @@
  * get, 和 set
  */
 
-import { isObject } from '../utils'
-import { reactive, reactiveFlags, reactiveMap } from './reactive'
-import { track, trigger } from "./effect"
+import { isObject } from '../utils/index.js'
+import { reactive, reactiveFlags, reactiveMap } from './reactive.js'
+import { track, trigger } from "./effect.js"
 
 function createGetter() {
   return function(target, key, receiver) {
