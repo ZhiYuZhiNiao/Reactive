@@ -1,27 +1,22 @@
 import { reactive, effect, stop } from "./src/reactive/index.js"
+import { ref } from './src/reactive/ref.js'
 
 const p = reactive({
   age: 18,
   name: '张三'
 })
 
+const count = ref(0)
+console.log('count = ', count)
 
 const runner = effect(() => {
-  console.log('fn-----', p.age)
-}, {
-  scheduler() {
-    console.log('scheduler', p.age)
-  },
-  lazy: false,
-  onStop() {
-    console.log('onStop')
-  }
+  console.log(count.value)
 })
 
 
 let i = 1
 setInterval(() => {
-  p.age++
+  count.value++
   i++
   if (i >= 4) {
     stop(runner)

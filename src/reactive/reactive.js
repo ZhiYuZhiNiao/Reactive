@@ -26,7 +26,7 @@ function isReactive(value) {
 /**
  * @description: 返回一个响应式对象
  * @param { object } target
- * @return { Proxy }
+ * @return { object }
  */
 function reactive(target) {
   return createReactiveObject(target, reactiveMap, baseHandlers)
@@ -38,7 +38,7 @@ function reactive(target) {
  * @param { object } target
  * @param { WeakMap<object, proxy> } proxyMap
  * @param { { get:function, set: function } } baseHandlers
- * @return { Proxy }
+ * @return { object }
  */
 function createReactiveObject(target, proxyMap, baseHandlers) {
   /* 非对象类型，直接返回 target  */
@@ -53,11 +53,21 @@ function createReactiveObject(target, proxyMap, baseHandlers) {
   return p
 }
 
+/**
+ * @description 把一个复杂类型的值转成一个响应式对象，如果是一个普通类型则直接返回该普通类型的值
+ * @param {*} target 
+ * @returns 
+ */
+function toReactive(target) {
+  return isObject(target) ? reactive(target) : target
+}
+
 
 export {
   reactiveMap,
   reactiveFlags,
   isReactive,
   reactive,
-  createReactiveObject
+  createReactiveObject,
+  toReactive
 }

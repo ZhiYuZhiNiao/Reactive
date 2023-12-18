@@ -1,4 +1,4 @@
-
+import { RefImpl } from "./ref.js"
 /**
  * @description: effect函数的回调函数会被包裹成一个 effect对象，然后执行这个回调函数的时候会对这个 effect实例进行依赖的收集
  * @param { function } fn
@@ -144,6 +144,15 @@ export function track(target, key) {
   if (!deps) {
     depsMap.set(key, (deps = new Set()))
   }
+  trackEffects(deps)
+}
+
+
+/**
+ * @description 收集effect
+ * @param { Set<ReactiveEffect | RefImpl> } deps
+ */
+export function trackEffects(deps) {
   // 如果已经存在了, 就不用再收集了
   if (deps.has(activeEffect)) return
   // 双向收集
@@ -164,6 +173,14 @@ export function trigger(target, key) {
   const depsMap = targetMap.get(target)
   const deps = depsMap?.get(key)
   if (!deps) return
+  triggerEffects(deps)
+}
+
+/**
+ * @description 触发 deps 里面的 effect
+ * @param { Set<ReactiveEffect | RefImpl> } deps
+ */
+export function triggerEffects(deps) {
   // 执行, 如果用户传入了scheduler参数，则依赖触发的时候执行 scheduler 不去执行 fn
   deps.forEach(effect => {
     if (effect.scheduler) {
