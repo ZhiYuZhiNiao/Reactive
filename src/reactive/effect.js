@@ -1,12 +1,15 @@
 import { RefImpl } from "./ref.js"
 /**
  * @description: effect函数的回调函数会被包裹成一个 effect对象，然后执行这个回调函数的时候会对这个 effect实例进行依赖的收集
- * @param { function } fn
- * @param { { lazy: boolean, scheduler: function, onStop: function } } opts
- * lazy 表示是否立即执行一次 effect包裹的fn; 
- * scheduler(调度器)如果传入这个参数则当依赖被触发的时候执行的就是我们传入的这个scheduler函数，而不会执行effect包裹的fn(fn的首次执行还是正常进行的)
- * onStop就是我们执行stop方法的时候会执行的回调函数
+ * @param { function } fn 
+ * @param { object } opts 配置项 
+ * @param { boolean } opts.lazy 是否立即执行一次fn
+ * @param { function } opts.scheduler 如果传入了该参数,依赖触发的时候不会再执行fn 而是执行这个函数
+ * @param { function } opts.onStop stop 方法执行的时候会触发这个回调函数
  * @return {{ effect: ReactiveEffect }} runner 是一个函数，这个函数上挂载了一个effect对象
+ * 
+ * @example
+ * effect(() => {}, { lazy: false, scheduler: undefined, onStop: undefined })
  */
 export function effect(fn, opts) {
   const _effect = new ReactiveEffect(fn)
@@ -37,7 +40,7 @@ export function stop(runner) {
  * @type { ReactiveEffect }
  */
 export let activeEffect // 当前的 activeEffect 实例
-class ReactiveEffect {
+export class ReactiveEffect {
 
   active = true // 当前 effect 是否是激活状态, 非激活状态只会执行fn, 但是不进行依赖收集
   /**
@@ -64,8 +67,9 @@ class ReactiveEffect {
    * @param { function } fn
    * @return { ReactiveEffect }
    */  
-  constructor(fn) {
+  constructor(fn, scheduler) {
     this.fn = fn
+    this.scheduler = scheduler
   }
 
   /* 
@@ -165,6 +169,7 @@ export function trackEffects(deps) {
  * @return { boolean }
  */
 export function canTrack() {
+  // 我们收集的就是当前的 effect实例，如果当前的effect实例不存在，那么肯定就不需要收集了
   return !!activeEffect
 }
 

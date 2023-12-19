@@ -1,28 +1,31 @@
-import { reactive, effect, stop } from "./src/reactive/index.js"
-import { ref } from './src/reactive/ref.js'
+import { reactive, effect, stop, ref, toRef, toRefs } from "./src/reactive/index.js"
 
 const p = reactive({
   age: 18,
-  name: '张三'
-})
-
-const count = ref(0)
-console.log('count = ', count)
-
-const runner = effect(() => {
-  console.log(count.value)
-})
-
-
-let i = 1
-setInterval(() => {
-  count.value++
-  i++
-  if (i >= 4) {
-    stop(runner)
+  name: '张三',
+  o: {
+    count: 1
   }
-}, 2000)
+})
 
-// runner() // 手动执行, 如果我们传了 lazy
 
-// stop(runner)
+var obj = {
+  name: '李四',
+  age: 1
+}
+
+obj = reactive(obj)
+
+// const age = toRef(obj, 'age')
+const { age, name } = toRefs(obj)
+console.log('age', age)
+console.log('name', name)
+effect(() => {
+  console.log(age.value)
+})
+
+// setInterval(() => {
+//   age.value++
+// }, 1500)
+
+

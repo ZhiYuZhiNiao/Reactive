@@ -8,8 +8,18 @@ function isObject(val) {
   return (val !== null) && (typeof val) === 'object'
 }
 
+/**
+ * 
+ * @param {*} val
+ * @return {boolean}
+ */
+function isFunction(val) {
+  return typeof val === 'function'
+}
+
 
 export {
-  isObject
+  isObject,
+  isFunction
 }
 
