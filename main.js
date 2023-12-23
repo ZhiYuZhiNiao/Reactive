@@ -1,31 +1,19 @@
-import { reactive, effect, stop, ref, toRef, toRefs } from "./src/reactive/index.js"
+import { reactive, effect, stop, ref, toRef, toRefs, watchEffect } from "./src/reactive/index.js"
 
-const p = reactive({
-  age: 18,
-  name: '张三',
-  o: {
-    count: 1
-  }
+const count = ref(0)
+
+watchEffect((onCleanup) => {
+  onCleanup(cancel)
+  console.log(`${count.value}count变化开始发送请求`)
 })
 
 
-var obj = {
-  name: '李四',
-  age: 1
+function cancel() {
+  console.log('取消上一次的请求')
 }
 
-obj = reactive(obj)
-
-// const age = toRef(obj, 'age')
-const { age, name } = toRefs(obj)
-console.log('age', age)
-console.log('name', name)
-effect(() => {
-  console.log(age.value)
-})
-
 // setInterval(() => {
-//   age.value++
-// }, 1500)
+//   count.value++
+// }, 4000)
 
 
